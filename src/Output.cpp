@@ -1,6 +1,5 @@
 
 #include "Output.h"
-#include "EEStore.h"
 #include "StringFormatter.h"
 
 // print all output states to stream
@@ -9,11 +8,12 @@ void Output::printAll(Print *stream){
     StringFormatter::send(stream, F("<Y %d %d>\n"), tt->data.id, tt->data.oStatus);
 } // Output::printAll
 
-void  Output::activate(int s){
+void  Output::activate (int s) {
   data.oStatus = (s > 0);
+
   // set state of output pin to HIGH or LOW
   // depending on whether bit zero of iFlag is set to 0 (ACTIVE=HIGH) or 1 (ACTIVE=LOW)
-  digitalWrite(data.pin, data.oStatus ^ bitRead (data.iFlag,0));
+  digitalWrite(data.pin, data.oStatus ^ bitRead (data.iFlag, 0));
   if (num > 0)
     EEPROM.put (num, data.oStatus);
 }
