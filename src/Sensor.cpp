@@ -1,5 +1,5 @@
-#include "StringFormatter.h"
 #include "Sensor.h"
+#include "StringFormatter.h"
 
 
 void Sensor::populate (SensorData data) {
