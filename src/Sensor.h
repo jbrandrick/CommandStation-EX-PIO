@@ -2,6 +2,7 @@
 #define Sensor_h
 
 #include "Arduino.h"
+#include "StringFormatter.h"
 
 enum SENSOR_TYPE : byte {
   ANALOG,
@@ -31,9 +32,14 @@ class Sensor {
     void populate ( SensorData );
     void populate ( int, int, int, int, SENSOR_TYPE );
     void check ( Print * );
-    void send ( Print * );
-    void sendDef ( Print * );
     bool read ();
+
+    void send ( Print *stream ) {
+      StringFormatter::send ( stream, F("<%c %d>\n"), active ? 'Q' : 'q', data.snum );
+    }
+    void sendDef ( Print *stream ) {
+      StringFormatter::send ( stream, F("<Q %d %d %d>\n"), data.snum, data.pin, data.pullUp);
+    }
 };
 
 #endif

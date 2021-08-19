@@ -1,8 +1,14 @@
 #ifndef DccManager_h
 #define DccManager_h
 
+#if !defined(DCC_MANAGER) 
+#define DCC_MANAGER DccManager::GetInstance()
+#endif
+
 #include "HashList.h"
+#include "Turnout.h"
 #include "Sensor.h"
+#include "Output.h"
 
 class DccManager {
 
@@ -20,13 +26,13 @@ class DccManager {
 
     static DccManager* GetInstance ();
 
-    // HashList<Output> outputs;
-    HashList<Sensor> sensors;
-    // HashList<Turnout> turnouts;
+    void init ();
+
+    HashList<Turnout>* turnouts;
+    HashList<Sensor>* sensors;
+    HashList<Output>* outputs;
 
     // Print* stream;
-
-    Sensor* getOrAddSensor (int);
 };
 
 #endif

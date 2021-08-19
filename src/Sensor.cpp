@@ -1,5 +1,4 @@
 #include "Sensor.h"
-#include "StringFormatter.h"
 
 
 void Sensor::populate (SensorData data) {
@@ -61,13 +60,4 @@ void Sensor::check ( Print *stream ) {
       send ( stream );
     }
   }
-}
-
-
-void Sensor::send ( Print *stream ) {
-  StringFormatter::send ( stream, F("<%c %d>\n"), active ? 'Q' : 'q', data.snum );
-}
-
-void Sensor::sendDef ( Print *stream ) {
-  StringFormatter::send ( stream, F("<Q %d %d %d>\n"), data.snum, data.pin, data.pullUp);
 }

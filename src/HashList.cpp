@@ -1,6 +1,6 @@
 #include "HashList.h"
 
-template <typename T>
+template <class T>
 T* HashList<T>::get (int key) {
   Node* pNode = GetRootNode ();
 
@@ -13,7 +13,7 @@ T* HashList<T>::get (int key) {
   return nullptr;
 }
 
-template <typename T>
+template <class T>
 T* HashList<T>::getOrAdd (int key) {
   T* pT = get (key);
 
@@ -23,7 +23,7 @@ T* HashList<T>::getOrAdd (int key) {
   return MakeNode (key)->data;
 }
 
-template <typename T>
+template <class T>
 bool HashList<T>::remove (int key) {
   Node* pNode       = GetRootNode ();
   Node* pPriorNode  = nullptr;

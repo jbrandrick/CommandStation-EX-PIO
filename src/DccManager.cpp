@@ -6,3 +6,10 @@ DccManager* DccManager::GetInstance () {
 
   return dccManager;
 }
+
+
+void DccManager::init () {
+  turnouts = new HashList<Turnout>;
+  sensors = new HashList<Sensor>;
+  outputs = new HashList<Output>;
+}

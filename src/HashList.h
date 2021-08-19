@@ -2,7 +2,7 @@
 #ifndef HashList_h
 #define HashList_h
 
-template <typename T>
+template <class T>
 class HashList {
 
   class Node;
