@@ -21,10 +21,14 @@ struct BrokenOutputData {
 
 class Output {
   private:
-    int num;  // EEPROM pointer (Chris has no idea what this is all about!)
+    int eeStoreTurnoutDataOffset;
 
   public:
     struct OutputData data;
+
+    Output () {
+      eeStoreTurnoutDataOffset = 0;
+    }
 
     void populate ( OutputData );
     void populate (uint16_t, uint8_t, uint8_t, uint8_t = 0);
@@ -36,8 +40,8 @@ class Output {
       return data.oStatus ^ bitRead (data.iFlag, 0);
     }
     void persistStatus () {
-      if (num > 0)
-        EEPROM.put (num, data.oStatus);
+      if (eeStoreTurnoutDataOffset > 0)
+        EEPROM.put (eeStoreTurnoutDataOffset, data.oStatus);
     }
     void send ( Print *stream ) {
       StringFormatter::send (stream, F("<Y %d %d>\n"), data.id, data.oStatus);

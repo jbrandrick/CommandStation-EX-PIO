@@ -42,5 +42,6 @@ bool HashList<T>::remove (int key) {
   delete pNode;
 
   count--;
+  seq++;
   return true;
 }

@@ -13,6 +13,7 @@
 class DccManager {
 
   private:
+  
     DccManager () {
       dccManager = nullptr;
     }

@@ -33,6 +33,10 @@ class Turnout {
     static void printAll(Print *);
 
     TurnoutData data;
+
+    Turnout () {
+      eeStoreTurnoutDataOffset = 0;
+    }
     
     void populate (TurnoutData);
     void populate (int id , int address , int subAddress);

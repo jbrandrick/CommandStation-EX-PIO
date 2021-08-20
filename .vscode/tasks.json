@@ -3,15 +3,6 @@
 	"tasks": [
 		{
 			"type": "PlatformIO",
-			"task": "Test (native)",
-			"problemMatcher": [
-				"$platformio"
-			],
-			"group": "test",
-			"label": "PlatformIO: Test (native)"
-		},
-		{
-			"type": "PlatformIO",
 			"task": "Test",
 			"problemMatcher": [
 				"$platformio"
