@@ -14,13 +14,17 @@ T* HashList<T>::get (int key) {
 }
 
 template <class T>
+T* HashList<T>::add (int key) {
+  return MakeNode (key)->data;
+}
+
+template <class T>
 T* HashList<T>::getOrAdd (int key) {
   T* pT = get (key);
 
-  if (pT != nullptr)
-    return pT;
-
-  return MakeNode (key)->data;
+  if (pT == nullptr)
+    pT = add (key);
+  return pT;
 }
 
 template <class T>

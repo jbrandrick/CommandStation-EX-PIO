@@ -24,7 +24,12 @@ void Turnout::activate (bool state) { // activate is virtual here so that it can
 }
 
 void Turnout::populate (TurnoutData data) {
-  populate (data.id, data.address, data.subAddress);
+  if (data.tStatus & STATUS_PWM)
+    populate (data.id, data.tStatus & STATUS_PWMPIN, data.inactiveAngle, data.moveAngle);
+  else
+    populate (data.id, data.address, data.subAddress);
+
+  data.tStatus = data.tStatus;
 }
 
 void Turnout::populate (int id, int add, int subAdd) {
@@ -33,6 +38,7 @@ void Turnout::populate (int id, int add, int subAdd) {
   data.tStatus    = 0;
 }
 
+// are activeAngle & inactiveAngle in the right order?
 void Turnout::populate (int id, byte pin, int activeAngle, int inactiveAngle) {
   data.tStatus        = STATUS_PWM | (pin & STATUS_PWMPIN);
   data.inactiveAngle  = inactiveAngle;

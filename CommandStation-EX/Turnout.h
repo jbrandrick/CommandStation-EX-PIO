@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <EEPROM.h>
+#include "RingStream.h"
 #include "StringFormatter.h"
 
 const byte STATUS_ACTIVE        = 0x80; // Flag as activated
@@ -55,8 +56,14 @@ class Turnout {
     void setTurnoutDataOffset (int pointer) {
       eeStoreTurnoutDataOffset = pointer + offsetof (TurnoutData, tStatus);
     }
-    void send ( Print *stream ) {
-    StringFormatter::send (stream, F("<H %d %d>\n"), data.id, (data.tStatus & STATUS_ACTIVE) != 0);
+    void send (Print* stream) {
+      StringFormatter::send (stream, F("<H %d %d>\n"), data.id, (data.tStatus & STATUS_ACTIVE) != 0);
+    }
+    void sendDef (Print* stream) {
+      StringFormatter::send(stream, F("<H %d %d %d %d>\n"), data.id, data.address, data.subAddress, isActive ());
+    }
+    void sendWifi (RingStream* stream) {
+      StringFormatter::send (stream,F("]\\[%d}|{%d}|{%c"), data.id, data.id, isActive () ? '4' : '2');
     }
 };
   

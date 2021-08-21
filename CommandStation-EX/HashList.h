@@ -8,6 +8,7 @@ class HashList {
   class Node;
 
   public:
+
     HashList<T> () noexcept {
       pRoot = nullptr;
       count = 0;
@@ -15,6 +16,7 @@ class HashList {
     };
 
     T*    get (int);
+    T*    add (int);
     T*    getOrAdd (int);
     bool  remove (int);
     int   size () {
@@ -26,16 +28,8 @@ class HashList {
     int   currentSeq () {
       return seq;
     }
-    T* getIt (int key) {
-      Node* pNode = GetRootNode ();
-
-      while (pNode) {
-        if (pNode->key == key)
-          return pNode->data;
-        pNode = pNode->pNext;
-        }
-
-      return nullptr;
+    Node* GetRootNode () {
+      return pRoot;
     }
 
 
@@ -48,10 +42,17 @@ class HashList {
     class Iterator {
       private:
         const Node* pCurrentNode;
+        const Node* pRootNode;
 
       public:
-        Iterator (const Node* pNode) noexcept :
-          pCurrentNode (pNode) {};
+        Iterator () noexcept {
+          pCurrentNode  = nullptr;
+          pRootNode     = nullptr;
+        }
+        Iterator (const Node* pNode) noexcept {
+          pCurrentNode  = pNode;
+          pRootNode     = pNode;
+        }
 
         void next () {
           if (pCurrentNode)
@@ -59,6 +60,9 @@ class HashList {
         }
         bool hasNext () {
           return pCurrentNode != nullptr;
+        }
+        void reset () {
+          pCurrentNode = pRootNode;
         }
 
         bool operator!= (const Iterator& iterator) {
@@ -74,6 +78,7 @@ class HashList {
 
 
   private:
+
     Node* pRoot;
     int   count;
     int   seq;
@@ -112,9 +117,6 @@ class HashList {
       return pNewNode;
     }
 
-    Node* GetRootNode () {
-      return pRoot;
-    }
     void SetRootNode (Node* pNode) {
       pRoot = pNode;
     }

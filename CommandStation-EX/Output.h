@@ -21,18 +21,18 @@ struct BrokenOutputData {
 
 class Output {
   private:
-    int eeStoreTurnoutDataOffset;
+    int eeStoreOutputDataOffset;
 
   public:
     struct OutputData data;
 
     Output () {
-      eeStoreTurnoutDataOffset = 0;
+      eeStoreOutputDataOffset = 0;
     }
 
-    void populate ( OutputData );
+    void populate (OutputData);
     void populate (uint16_t, uint8_t, uint8_t, uint8_t = 0);
-    void activate (int s);
+    void activate (int);
 
     uint8_t activeValue () {
       // set state of output pin to HIGH or LOW
@@ -40,11 +40,14 @@ class Output {
       return data.oStatus ^ bitRead (data.iFlag, 0);
     }
     void persistStatus () {
-      if (eeStoreTurnoutDataOffset > 0)
-        EEPROM.put (eeStoreTurnoutDataOffset, data.oStatus);
+      if (eeStoreOutputDataOffset > 0)
+        EEPROM.put (eeStoreOutputDataOffset, data.oStatus);
     }
     void send ( Print *stream ) {
       StringFormatter::send (stream, F("<Y %d %d>\n"), data.id, data.oStatus);
+    }
+    void sendDef (Print *stream) {
+      StringFormatter::send(stream, F("<Y %d %d %d %d>\n"), data.id, data.pin, data.iFlag, data.oStatus);
     }
 };
   

@@ -29,16 +29,16 @@ class Sensor {
       latchdelay  = 0;
     }
 
-    void populate ( SensorData );
-    void populate ( int, int, int, int, SENSOR_TYPE );
-    void check ( Print * );
+    void populate (SensorData);
+    void populate (SENSOR_TYPE, int, int, int, int = 0);
+    void check (Print *);
     bool read ();
 
-    void send ( Print *stream ) {
-      StringFormatter::send ( stream, F("<%c %d>\n"), active ? 'Q' : 'q', data.snum );
+    void send (Print *stream) {
+      StringFormatter::send (stream, F("<%c %d>\n"), active ? 'Q' : 'q', data.snum);
     }
-    void sendDef ( Print *stream ) {
-      StringFormatter::send ( stream, F("<Q %d %d %d>\n"), data.snum, data.pin, data.pullUp);
+    void sendDef (Print *stream) {
+      StringFormatter::send (stream, F("<Q %d %d %d>\n"), data.snum, data.pin, data.pullUp);
     }
 };
 

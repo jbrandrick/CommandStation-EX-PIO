@@ -17,7 +17,7 @@ void testHashList () {
 
 
 void test_empty_get () {
-  TEST_ASSERT_NULL (list->getIt (1));
+  TEST_ASSERT_NULL (list->get (1));
 }
 
 void test_empty_hashlist () {

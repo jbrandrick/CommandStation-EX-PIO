@@ -1,7 +1,6 @@
-
 #include "Output.h"
 
-void  Output::activate (int s) {
+void Output::activate (int s) {
   data.oStatus = (s > 0);
 
   // set state of output pin to HIGH or LOW
@@ -12,27 +11,23 @@ void  Output::activate (int s) {
 
 
 void Output::populate (OutputData data) {
-  populate ( data.id, data.pin, data.iFlag);
+  populate (data.id, data.pin, data.iFlag, data.oStatus);
 }
 
 
-void Output::populate (uint16_t id, uint8_t pin, uint8_t iFlag, uint8_t v){
-  
+void Output::populate (uint16_t id, uint8_t pin, uint8_t iFlag, uint8_t oStatus = 0) {
   data.id       = id;
   data.pin      = pin;
   data.iFlag    = iFlag;
-  data.oStatus  = 0;
 
-  if (v == 1) {
-    // sets status to 0 (INACTIVE) is bit 1 of iFlag=0, otherwise set to value of bit 2 of iFlag
-    if (bitRead (data.iFlag, 1))
-      data.oStatus = bitRead (data.iFlag, 2);
-    else
-      data.oStatus = 0;
+  // sets status to 0 (INACTIVE) is bit 1 of iFlag=0, otherwise set to value of bit 2 of iFlag
+  if (bitRead (data.iFlag, 1))
+    data.oStatus = bitRead (data.iFlag, 2);
+  else
+    data.oStatus = oStatus;
 
-    digitalWrite (data.pin, activeValue ());
-    pinMode (data.pin, OUTPUT);
-  }
+  digitalWrite (data.pin, activeValue ());
+  pinMode (data.pin, OUTPUT);
 }
 
 /***********************************************************************

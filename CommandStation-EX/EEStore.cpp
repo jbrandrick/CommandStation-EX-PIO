@@ -30,35 +30,33 @@
   ExternalEEPROM EEPROM;
 #endif
 
-void EEStore::load() {
+void EEStore::init () {
 
 #if defined(ARDUINO_ARCH_SAMD)
   EEPROM.begin(0x50);     // Address for Microchip 24-series EEPROM with all three A pins grounded (0b1010000 = 0x50)
 #endif
 
-  EEStoreData* eeStoreData = (EEStoreData *) calloc (1, sizeof(EEStoreData));
-  EEPROM.get (0, eeStoreData);
+
+  EEPROM.get (0, data);
 
   // check to see that eeStore contains valid DCC++ ID
   // if not, create blank eeStore structure (no turnouts, no sensors) and save it back to EEPROM
-  if (strncmp (eeStoreData->id, EESTORE_ID, sizeof(EESTORE_ID)) != 0)
+  if (strncmp (data.id, EESTORE_ID, sizeof(EESTORE_ID)) != 0)
     clearStoreData ();
 
   resetPointer ();
 
-  loadTurnouts (eeStoreData);
-  loadSensors (eeStoreData);
-  loadOutputs (eeStoreData);
-
-  free (eeStoreData);
+  loadTurnouts ();
+  loadSensors ();
+  loadOutputs ();
 }
 
 
-void EEStore::loadTurnouts (EEStoreData* eeStoreData) {
+void EEStore::loadTurnouts () {
   Turnout* turnout;
   TurnoutData turnoutData;
 
-  for ( int i = 0; i < eeStoreData->nTurnouts; i++ ) {
+  for ( int i = 0; i < data.nTurnouts; i++ ) {
     EEPROM.get ( eeAddress, turnoutData );
     turnout = DCC_MANAGER->turnouts->getOrAdd (turnoutData.id);
     turnout->populate (turnoutData);
@@ -67,11 +65,11 @@ void EEStore::loadTurnouts (EEStoreData* eeStoreData) {
   }
 }
 
-void EEStore::loadSensors (EEStoreData* eeStoreData) {
+void EEStore::loadSensors () {
   Sensor* sensor;
   SensorData sensorData;
 
-  for ( int i = 0; i < eeStoreData->nSensors; i++ ) {
+  for ( int i = 0; i < data.nSensors; i++ ) {
     EEPROM.get (eeAddress, sensorData);
     sensor = DCC_MANAGER->sensors->getOrAdd (sensorData.snum);
     sensor->populate (sensorData);
@@ -79,11 +77,11 @@ void EEStore::loadSensors (EEStoreData* eeStoreData) {
   }
 }
 
-void EEStore::loadOutputs (EEStoreData* eeStoreData) {
+void EEStore::loadOutputs () {
   Output* output;
   OutputData outputData;
 
-  for ( int i = 0; i < eeStoreData->nOutputs; i++ ) {
+  for ( int i = 0; i < data.nOutputs; i++ ) {
     EEPROM.get (eeAddress, outputData);
     output = DCC_MANAGER->outputs->getOrAdd (outputData.id);
     output->populate (outputData);

@@ -2,6 +2,7 @@
 #define EEStore_h
 
 #include <Arduino.h>
+#include "StringFormatter.h"
 
 #if defined(ARDUINO_ARCH_SAMD)
 #include <SparkFun_External_EEPROM.h>
@@ -24,19 +25,10 @@ class EEStore {
   EEStoreData data;
   int         eeAddress;
 
-  void loadTurnouts (EEStoreData*);
-  void loadSensors (EEStoreData*);
-  void loadOutputs (EEStoreData*);
+  void loadTurnouts ();
+  void loadSensors ();
+  void loadOutputs ();
 
-  static void dump(int);
-
-  void clearStoreData () {
-    sprintf (data.id, EESTORE_ID);
-    data.nTurnouts = 0;
-    data.nSensors  = 0;
-    data.nOutputs  = 0;
-    EEPROM.put (0, data);
-  }
   void advancePointer (int offset) {
     eeAddress += offset;
   }
@@ -49,8 +41,22 @@ class EEStore {
 
   public:
 
-    void load();
-    void store();
+    EEStore () {}
+
+    void init ();
+    void store ();
+    void dump (int);
+
+    void clearStoreData () {
+      sprintf (data.id, EESTORE_ID);
+      data.nTurnouts = 0;
+      data.nSensors  = 0;
+      data.nOutputs  = 0;
+      EEPROM.put (0, data);
+    }
+    void send (Print* stream) {
+      StringFormatter::send (stream, F("<e %d %d %d>\n"), data.nTurnouts, data.nSensors, data.nOutputs);
+    }
 };
 
 #endif

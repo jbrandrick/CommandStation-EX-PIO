@@ -2,11 +2,11 @@
 
 
 void Sensor::populate (SensorData data) {
-  populate ( data.snum, data.pin, data.pullUp, data.threshold, data.type );
+  populate (data.type, data.snum, data.pin, data.pullUp, data.threshold);
 }
 
 
-void Sensor::populate ( int snum, int pin, int pullUp, int threshold = 0, SENSOR_TYPE type = DIGITAL) {
+void Sensor::populate (SENSOR_TYPE type, int snum, int pin, int pullUp, int threshold) {
   data.type       = type;
   data.snum       = snum;
   data.pin        = pin;
