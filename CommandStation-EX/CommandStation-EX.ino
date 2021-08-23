@@ -45,6 +45,8 @@
  */
 
 
+#ifndef UNIT_TEST
+
 #include "DCCEX.h"
 
 // Create a serial command parser for the USB connection, 
@@ -143,3 +145,5 @@ void loop()
     LCD(2,F("Free RAM=%5db"), ramLowWatermark);
   }
 }
+
+#endif

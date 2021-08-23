@@ -2,7 +2,7 @@
 #define DccManager_h
 
 #if !defined(DCC_MANAGER) 
-#define DCC_MANAGER DccManager::GetInstance()
+#define DCC_MANAGER DccManager::getInstance()
 #endif
 
 #include "HashList.h"
@@ -15,26 +15,25 @@ class DccManager {
 
   private:
 
-    DccManager () {
-      dccManager = nullptr;
-    }
+    DccManager () {}
 
-    static DccManager* dccManager;
+    static DccManager* instance;
 
     HashList<Sensor>::Iterator iSensor;
 
   public:
+
+    DccManager (DccManager& other) = delete;
+    void operator= (const DccManager&) = delete;
+
+    static DccManager* getInstance ();
+
 
     EEStore* eeStore;
 
     HashList<Turnout>* turnouts;
     HashList<Sensor>* sensors;
     HashList<Output>* outputs;
-
-    DccManager (DccManager& other) = delete;
-    void operator= (const DccManager&) = delete;
-
-    static DccManager* GetInstance ();
 
     void init ();
 

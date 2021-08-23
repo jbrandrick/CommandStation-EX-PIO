@@ -2,6 +2,10 @@
 #ifndef HashList_h
 #define HashList_h
 
+
+#include "Turnout.h"
+#include "Sensor.h"
+#include "Output.h"
 template <class T>
 class HashList {
 
@@ -123,4 +127,8 @@ class HashList {
 
 };
 
+
+template class HashList<Turnout>;
+template class HashList<Sensor>;
+template class HashList<Output>;
 #endif

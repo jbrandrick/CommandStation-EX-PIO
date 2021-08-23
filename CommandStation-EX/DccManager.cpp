@@ -1,12 +1,13 @@
 #include "DccManager.h"
 
-DccManager* DccManager::GetInstance () {
-  if (dccManager == nullptr)
-    dccManager = new DccManager ();
+DccManager* DccManager::instance = nullptr;
 
-  return dccManager;
+ DccManager* DccManager::getInstance () {
+  if (instance == nullptr)
+    instance = new DccManager ();
+
+  return instance;
 }
-
 
 void DccManager::init () {
   eeStore = new EEStore;

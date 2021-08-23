@@ -15,7 +15,7 @@ void Output::populate (OutputData data) {
 }
 
 
-void Output::populate (uint16_t id, uint8_t pin, uint8_t iFlag, uint8_t oStatus = 0) {
+void Output::populate (uint16_t id, uint8_t pin, uint8_t iFlag, uint8_t oStatus) {
   data.id       = id;
   data.pin      = pin;
   data.iFlag    = iFlag;
