@@ -6,9 +6,9 @@ class TestValue {
 };
 
 void testHashList ();
-void test_empty_get ();
-void test_empty_hashlist ();
-void test_add_to_hashlist ();
-void test_remove_from_hashlist ();
+void testHashList_empty_get ();
+void testHashList_empty_hashlist ();
+void testHashList_add_to_hashlist ();
+void testHashList_remove_from_hashlist ();
 
-bool compare_keys (int [], HashList<TestValue>*);
+bool testHashList_compare_keys (int [], HashList<TestValue>*);

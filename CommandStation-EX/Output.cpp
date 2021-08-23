@@ -10,8 +10,8 @@ void Output::activate (int s) {
 }
 
 
-void Output::populate (OutputData data) {
-  populate (data.id, data.pin, data.iFlag, data.oStatus);
+void Output::populate (OutputData dataIn) {
+  populate (dataIn.id, dataIn.pin, dataIn.iFlag, dataIn.oStatus);
 }
 
 

@@ -2,6 +2,8 @@
 #include <unity.h>
 
 #include "tests_HashList.h"
+#include "tests_Turnout.h"
+#include "tests_Sensor.h"
 #include "tests_Output.h"
 
 void setup () {
@@ -12,6 +14,8 @@ void setup () {
   UNITY_BEGIN ();
 
   testHashList ();
+  testTurnout ();
+  testSensor ();
   testOutput ();
 
   UNITY_END ();

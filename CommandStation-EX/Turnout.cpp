@@ -23,16 +23,15 @@ void Turnout::activate (bool state) { // activate is virtual here so that it can
   persistStatus ();
 }
 
-void Turnout::populate (TurnoutData data) {
-  if (data.tStatus & STATUS_PWM)
-    populate (data.id, data.tStatus & STATUS_PWMPIN, data.inactiveAngle, data.moveAngle);
+void Turnout::populate (TurnoutData dataIn) {
+  if (dataIn.tStatus & STATUS_PWM)
+    populate (dataIn.id, dataIn.tStatus & STATUS_PWMPIN, dataIn.inactiveAngle, dataIn.moveAngle);
   else
-    populate (data.id, data.address, data.subAddress);
-
-  data.tStatus = data.tStatus;
+    populate (dataIn.id, dataIn.address, dataIn.subAddress);
 }
 
 void Turnout::populate (int id, int add, int subAdd) {
+  data.id         = id;
   data.address    = add;
   data.subAddress = subAdd;
   data.tStatus    = 0;
@@ -40,6 +39,7 @@ void Turnout::populate (int id, int add, int subAdd) {
 
 // are activeAngle & inactiveAngle in the right order?
 void Turnout::populate (int id, byte pin, int activeAngle, int inactiveAngle) {
+  data.id             = id;
   data.tStatus        = STATUS_PWM | (pin & STATUS_PWMPIN);
   data.inactiveAngle  = inactiveAngle;
   data.moveAngle      = activeAngle - inactiveAngle;

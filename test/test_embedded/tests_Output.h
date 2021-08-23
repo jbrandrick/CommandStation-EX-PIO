@@ -2,5 +2,5 @@
 
 void testOutput ();
 
-void test_populate_with_outputdata ();
-void test_populate_with_fields ();
+void testOutput_populate_with_outputdata ();
+void testOutput_populate_with_fields ();
