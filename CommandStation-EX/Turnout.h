@@ -54,7 +54,7 @@ class Turnout {
         EEPROM.put (eeStoreTurnoutDataOffset, data.tStatus);
     }
     void setTurnoutDataOffset (int pointer) {
-      eeStoreTurnoutDataOffset = pointer + offsetof (TurnoutData, tStatus);
+      eeStoreTurnoutDataOffset = pointer + offsetof(TurnoutData, tStatus);
     }
     void send (Print* stream) {
       StringFormatter::send (stream, F("<H %d %d>\n"), data.id, (data.tStatus & STATUS_ACTIVE) != 0);

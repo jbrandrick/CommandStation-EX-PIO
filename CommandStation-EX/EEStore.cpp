@@ -85,6 +85,7 @@ void EEStore::loadOutputs () {
     EEPROM.get (eeAddress, outputData);
     output = DCC_MANAGER->outputs->getOrAdd (outputData.id);
     output->populate (outputData);
+    output->setOutputDataOffset (eeAddress);
     advancePointer (sizeof(outputData));
   }
 }
@@ -95,22 +96,24 @@ void EEStore::store (){
 
     data.nTurnouts = 0;
     for ( HashList<Turnout>::Iterator iTurnout (DCC_MANAGER->turnouts->begin ()); iTurnout.hasNext (); iTurnout.next ()) {
-      EEPROM.put ( pointer (), (*iTurnout)->data );
-      advancePointer ( sizeof(TurnoutData) );
+      EEPROM.put (eeAddress, (*iTurnout)->data);
+      (*iTurnout)->setTurnoutDataOffset (eeAddress);
+      advancePointer (sizeof(TurnoutData));
     }
     data.nTurnouts = DCC_MANAGER->turnouts->size ();
 
     data.nSensors = 0;
     for ( HashList<Sensor>::Iterator iSensor (DCC_MANAGER->sensors->begin ()); iSensor.hasNext (); iSensor.next ()) {
-      EEPROM.put ( pointer (), (*iSensor)->data );
-      advancePointer ( sizeof(SensorData) );
+      EEPROM.put (eeAddress, (*iSensor)->data);
+      advancePointer (sizeof(SensorData));
     }
     data.nSensors = DCC_MANAGER->sensors->size ();
 
     data.nOutputs = 0;
     for ( HashList<Output>::Iterator iOutput (DCC_MANAGER->outputs->begin ()); iOutput.hasNext (); iOutput.next ()) {
-      EEPROM.put ( pointer (), (*iOutput)->data );
-      advancePointer ( sizeof(OutputData) );
+      EEPROM.put (eeAddress, (*iOutput)->data);
+      (*iOutput)->setOutputDataOffset (eeAddress);
+      advancePointer (sizeof(OutputData));
     }
     data.nOutputs = DCC_MANAGER->outputs->size ();
 

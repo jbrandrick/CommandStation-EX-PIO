@@ -2,17 +2,31 @@
 #include <unity.h>
 #include "tests_HashList.h"
 #include "HashList.cpp"
+#include "StringFormatter.h"
+
+extern char *__brkval;
+extern char *__malloc_heap_start;
+void printFreeMemory () {
+  char top;
+  int freeMemory = __brkval ? &top - __brkval : &top - __malloc_heap_start;
+  StringFormatter::send(Serial, F("Free memory=%d\n"), freeMemory);
+}
+
 
 HashList<TestValue>* list;
 
 void testHashList () {
   list = new HashList<TestValue>;
-
-  RUN_TEST (testHashList_empty_get);
-  RUN_TEST (testHashList_empty_hashlist);
-  RUN_TEST (testHashList_add_to_hashlist);
-  RUN_TEST (testHashList_remove_from_hashlist);
-  RUN_TEST (testHashList_empty_hashlist);
+  printFreeMemory ();
+                                            // create & free 3 int[100] arrays
+  for (int i=0; i < 100; i++) {             // do this 100 times
+      RUN_TEST (testHashList_empty_get);
+      RUN_TEST (testHashList_empty_hashlist);
+      RUN_TEST (testHashList_add_to_hashlist);
+      RUN_TEST (testHashList_remove_from_hashlist);
+      RUN_TEST (testHashList_empty_hashlist);
+    }
+  printFreeMemory ();                       // memory should reduce by 600 + a few bytes (3 * 100 * 2)
 }
 
 

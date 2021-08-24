@@ -14,9 +14,10 @@ class HashList {
   public:
 
     HashList<T> () noexcept {
-      pRoot = nullptr;
-      count = 0;
-      seq   = 0;
+      pFreeRoot = nullptr;
+      pRoot     = nullptr;
+      count     = 0;
+      seq       = 0;
     };
 
     T*    get (int);
@@ -83,13 +84,13 @@ class HashList {
 
   private:
 
+    Node* pFreeRoot;
     Node* pRoot;
     int   count;
     int   seq;
 
 
     class Node {
-
       int   key;
       T*    data;
       Node* pNext;
@@ -99,18 +100,26 @@ class HashList {
 
 
     Node* MakeNode (int key) {
-      Node* pNewNode  = new Node;
-      pNewNode->key   = key;
-      pNewNode->data  = new T;
-      pNewNode->pNext = nullptr;
+      Node* pNode = GetRootNode ();
+      Node* pNewNode;
 
-      Node* pNode     = GetRootNode ();
+      if (pFreeRoot == nullptr) {
+        pNewNode        = new Node;
+        pNewNode->data  = new T;
+
+      } else {
+        pNewNode        = pFreeRoot;
+        pFreeRoot       = pNewNode->pNext;
+      }
+
+      pNewNode->key     = key;
+      pNewNode->pNext   = nullptr;
 
       if (pNode) {
         while (pNode->pNext) {
-          pNode       = pNode->pNext;
+          pNode         = pNode->pNext;
         }
-        pNode->pNext  = pNewNode;
+        pNode->pNext    = pNewNode;
 
       } else {
         SetRootNode (pNewNode);

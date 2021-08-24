@@ -2,7 +2,7 @@
 
 class TestValue {
   public:
-    int value;
+    int value[100];
 };
 
 void testHashList ();

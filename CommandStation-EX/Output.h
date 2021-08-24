@@ -43,6 +43,9 @@ class Output {
       if (eeStoreOutputDataOffset > 0)
         EEPROM.put (eeStoreOutputDataOffset, data.oStatus);
     }
+    void setOutputDataOffset (int pointer) {
+      eeStoreOutputDataOffset = pointer + offsetof(OutputData, oStatus);
+    }
     void send ( Print *stream ) {
       StringFormatter::send (stream, F("<Y %d %d>\n"), data.id, data.oStatus);
     }

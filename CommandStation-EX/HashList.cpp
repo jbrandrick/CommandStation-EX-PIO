@@ -43,7 +43,9 @@ bool HashList<T>::remove (int key) {
   } else {
     pPriorNode->pNext = pNode->pNext;
   }
-  delete pNode;
+
+  pNode->pNext  = pFreeRoot;
+  pFreeRoot     = pNode;
 
   count--;
   seq++;

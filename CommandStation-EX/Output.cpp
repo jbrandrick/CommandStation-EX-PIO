@@ -6,6 +6,7 @@ void Output::activate (int s) {
   // set state of output pin to HIGH or LOW
   // depending on whether bit zero of iFlag is set to 0 (ACTIVE=HIGH) or 1 (ACTIVE=LOW)
   digitalWrite (data.pin, activeValue ());
+  
   persistStatus ();
 }
 
