@@ -3,6 +3,7 @@
 
 #include "Arduino.h"
 #include "StringFormatter.h"
+#include "DIAG.h"
 
 enum SENSOR_TYPE : byte {
   ANALOG,
@@ -35,6 +36,8 @@ class Sensor {
     bool read ();
 
     void send (Print *stream) {
+    if (Diag::CMD)
+        DIAG(F("Sensor::send %d"), data.snum);
       StringFormatter::send (stream, F("<%c %d>\n"), active ? 'Q' : 'q', data.snum);
     }
     void sendDef (Print *stream) {

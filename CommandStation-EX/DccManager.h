@@ -19,7 +19,7 @@ class DccManager {
 
     static DccManager* instance;
 
-    HashList<Sensor>::Iterator iSensor;
+    int currentSensorKey;
 
   public:
 
@@ -37,16 +37,7 @@ class DccManager {
 
     void init ();
 
-    void printAllTurnouts (Print*);
-    void sendDefTurnouts (Print*);
-    void sendWifiTurnouts (RingStream*);
-
     void checkSensor (Stream&);
-    void printAllSensors (Print*);
-    void sendDefSensors (Print*);
-
-    void printAllOutputs (Print*);
-    void sendDefOutputs (Print*);
 };
 
 #endif

@@ -45,7 +45,6 @@
  */
 
 
-#ifndef UNIT_TEST
 
 #include "DCCEX.h"
 
@@ -146,4 +145,3 @@ void loop()
   }
 }
 
-#endif

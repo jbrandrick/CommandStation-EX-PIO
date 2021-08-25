@@ -92,29 +92,31 @@ void EEStore::loadOutputs () {
 
 
 void EEStore::store (){
+    if (Diag::CMD)
+        DIAG(F("EEStore::store"));
     resetPointer ();
 
     data.nTurnouts = 0;
-    for ( HashList<Turnout>::Iterator iTurnout (DCC_MANAGER->turnouts->begin ()); iTurnout.hasNext (); iTurnout.next ()) {
-      EEPROM.put (eeAddress, (*iTurnout)->data);
-      (*iTurnout)->setTurnoutDataOffset (eeAddress);
+    DCC_MANAGER->turnouts->walkList ([this] (int _key, Turnout* turnout) mutable {
+      EEPROM.put (eeAddress, turnout->data);
+      turnout->setTurnoutDataOffset (eeAddress);
       advancePointer (sizeof(TurnoutData));
-    }
+    });
     data.nTurnouts = DCC_MANAGER->turnouts->size ();
 
     data.nSensors = 0;
-    for ( HashList<Sensor>::Iterator iSensor (DCC_MANAGER->sensors->begin ()); iSensor.hasNext (); iSensor.next ()) {
-      EEPROM.put (eeAddress, (*iSensor)->data);
+    DCC_MANAGER->sensors->walkList ([this] (int _key, Sensor* sensor) {
+      EEPROM.put (eeAddress, sensor->data);
       advancePointer (sizeof(SensorData));
-    }
+    });
     data.nSensors = DCC_MANAGER->sensors->size ();
 
     data.nOutputs = 0;
-    for ( HashList<Output>::Iterator iOutput (DCC_MANAGER->outputs->begin ()); iOutput.hasNext (); iOutput.next ()) {
-      EEPROM.put (eeAddress, (*iOutput)->data);
-      (*iOutput)->setOutputDataOffset (eeAddress);
+    DCC_MANAGER->outputs->walkList ([this] (int _key, Output* output) {
+      EEPROM.put (eeAddress, output->data);
+      output->setOutputDataOffset (eeAddress);
       advancePointer (sizeof(OutputData));
-    }
+    });
     data.nOutputs = DCC_MANAGER->outputs->size ();
 
     EEPROM.put (0, data);

@@ -2,20 +2,19 @@
 
 template <class T>
 T* HashList<T>::get (int key) {
-  Node* pNode = GetRootNode ();
-
-  while (pNode) {
-    if (pNode->key == key)
-      return pNode->data;
-    pNode = pNode->pNext;
-    }
-
-  return nullptr;
+  Node* pNode = getNode (key);
+  if (pNode == nullptr)
+    return nullptr;
+  else
+    return pNode->data;
 }
 
 template <class T>
 T* HashList<T>::add (int key) {
-  return MakeNode (key)->data;
+    if (Diag::CMD)
+        DIAG(F("HashList::Add %d"), key);
+  Node* pT = makeNode (key);
+  return pT->data;
 }
 
 template <class T>
@@ -29,7 +28,7 @@ T* HashList<T>::getOrAdd (int key) {
 
 template <class T>
 bool HashList<T>::remove (int key) {
-  Node* pNode       = GetRootNode ();
+  Node* pNode       = getRootNode ();
   Node* pPriorNode  = nullptr;
 
   while (pNode != nullptr  &&  pNode->key != key) {
@@ -39,7 +38,7 @@ bool HashList<T>::remove (int key) {
   if (pNode == nullptr) return false;
 
   if (pPriorNode == nullptr) {
-    SetRootNode (pNode->pNext);
+    setRootNode (pNode->pNext);
   } else {
     pPriorNode->pNext = pNode->pNext;
   }
@@ -50,4 +49,24 @@ bool HashList<T>::remove (int key) {
   count--;
   seq++;
   return true;
+}
+
+
+template <class T>
+int HashList<T>::getFirstKey () {
+  if (getRootNode () == nullptr)
+    return -1;
+  return pRoot->key;
+}
+
+template <class T>
+int HashList<T>::getNextKey (int key) {
+  Node* pNode = getNode (key);
+  if (pNode == nullptr)
+    return getFirstKey ();
+
+  if (pNode->pNext == nullptr)
+    return getFirstKey ();
+  else
+    return pNode->pNext->key;
 }

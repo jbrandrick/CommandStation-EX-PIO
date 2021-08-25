@@ -42,6 +42,7 @@ void testHashList_add_to_hashlist () {
   list->getOrAdd (1);
   int ref1[] = {1};
   TEST_ASSERT_TRUE (testHashList_compare_keys (ref1, list));
+  TEST_ASSERT_EQUAL (1, list->size ());
 
   list->getOrAdd (2);
   int ref2[] = {1, 2};
@@ -69,18 +70,15 @@ void testHashList_remove_from_hashlist () {
 
 
 bool testHashList_compare_keys (int ref[], HashList<TestValue>* list) {
-  int refIdx = 0;
-
   // if (sizeof(*ref) != list->size ())
   //   return false;
-
-  for ( HashList<TestValue>::Iterator iterator (list->begin ());
-                                iterator.hasNext ();
-                                iterator.next ()) {
-    if (ref[refIdx] != iterator.key ())
-      return false;
+  int refIdx = 0;
+  bool result = true;
+  list->walkList ([ref, refIdx, result] (int key, TestValue* testValue) mutable {
+    if (ref[refIdx] != key)
+      result = false;
     refIdx++;
-  }
+  });
 
-  return true;
+  return result;
 }

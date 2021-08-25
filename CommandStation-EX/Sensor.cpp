@@ -17,9 +17,7 @@ void Sensor::populate (SENSOR_TYPE type, int snum, int pin, int pullUp, int thre
     analogWrite (pin, pullUp);   // ????? don't use Arduino's internal pull-up resistors for
                                    // external infrared sensors
                                    // each sensor must have its own 1K external pull-up resistor
-  }
-
-  if (data.type == DIGITAL) {
+  } else if (data.type == DIGITAL) {
     pinMode (pin, INPUT);         // set mode to input
     digitalWrite (pin, pullUp);   // don't use Arduino's internal pull-up resistors for
                                     // external infrared sensors

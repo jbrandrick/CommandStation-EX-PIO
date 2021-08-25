@@ -117,7 +117,9 @@ void WiThrottle::parse(RingStream * stream, byte * cmdx) {
     // Send turnout list if changed since last sent (will replace list on client)
     if (DCC_MANAGER->turnouts->hasChanged (turnoutListHash)) {  // WAS if (turnoutListHash != Turnout::turnoutlistHash) {
       StringFormatter::send(stream,F("PTL"));
-      DCC_MANAGER->sendWifiTurnouts (stream); // WAS
+
+      DCC_MANAGER->turnouts->walkList ([stream] (int _key, Turnout* turnout) { turnout->sendWifi (stream); }); // WAS
+
       StringFormatter::send(stream,F("\n"));
       turnoutListHash = DCC_MANAGER->turnouts->currentSeq (); // WAS  turnoutListHash = Turnout::turnoutlistHash; // keep a copy of hash for later comparison
     }

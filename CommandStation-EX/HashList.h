@@ -6,6 +6,7 @@
 #include "Turnout.h"
 #include "Sensor.h"
 #include "Output.h"
+#include "DIAG.h"
 template <class T>
 class HashList {
 
@@ -24,62 +25,24 @@ class HashList {
     T*    add (int);
     T*    getOrAdd (int);
     bool  remove (int);
+    int   getFirstKey ();
+    int   getNextKey (int);
+
+    template <typename FTN>
+    void walkList (FTN ftn) {
+      for (Node* pNode = getRootNode (); pNode != nullptr; pNode = pNode->pNext) {
+        ftn (pNode->key, pNode->data);
+      }
+    }
     int   size () {
       return count;
     }
     bool  hasChanged (int seqIn) {
-      return seq > seqIn;
+      return (seq > seqIn);
     }
     int   currentSeq () {
       return seq;
     }
-    Node* GetRootNode () {
-      return pRoot;
-    }
-
-
-    class Iterator;
-
-    Iterator begin () {
-      return Iterator(pRoot);
-    }
-
-    class Iterator {
-      private:
-        const Node* pCurrentNode;
-        const Node* pRootNode;
-
-      public:
-        Iterator () noexcept {
-          pCurrentNode  = nullptr;
-          pRootNode     = nullptr;
-        }
-        Iterator (const Node* pNode) noexcept {
-          pCurrentNode  = pNode;
-          pRootNode     = pNode;
-        }
-
-        void next () {
-          if (pCurrentNode)
-            pCurrentNode = pCurrentNode->pNext;
-        }
-        bool hasNext () {
-          return pCurrentNode != nullptr;
-        }
-        void reset () {
-          pCurrentNode = pRootNode;
-        }
-
-        bool operator!= (const Iterator& iterator) {
-          return pCurrentNode != iterator.pCurrentNode;
-        }
-        T* operator* () {
-          return pCurrentNode->data;
-        }
-        int key () {
-          return pCurrentNode->key;
-        }
-    };
 
 
   private:
@@ -99,8 +62,24 @@ class HashList {
     };
 
 
-    Node* MakeNode (int key) {
-      Node* pNode = GetRootNode ();
+    Node* getNode (int key) {
+      Node* pNode = getRootNode ();
+
+      while (pNode) {
+        if (pNode->key == key)
+          return pNode;
+        pNode = pNode->pNext;
+        }
+      return nullptr;
+    }
+    Node* getRootNode () {
+      return pRoot;
+    }
+    void setRootNode (Node* pNode) {
+      pRoot = pNode;
+    }
+    Node* makeNode (int key) {
+      Node* pNode = getRootNode ();
       Node* pNewNode;
 
       if (pFreeRoot == nullptr) {
@@ -116,28 +95,23 @@ class HashList {
       pNewNode->pNext   = nullptr;
 
       if (pNode) {
-        while (pNode->pNext) {
+        while (pNode->pNext != nullptr) {
           pNode         = pNode->pNext;
         }
         pNode->pNext    = pNewNode;
 
       } else {
-        SetRootNode (pNewNode);
+        setRootNode (pNewNode);
       }
       count++;
       seq++;
 
       return pNewNode;
     }
-
-    void SetRootNode (Node* pNode) {
-      pRoot = pNode;
-    }
-
 };
-
 
 template class HashList<Turnout>;
 template class HashList<Sensor>;
 template class HashList<Output>;
+
 #endif
