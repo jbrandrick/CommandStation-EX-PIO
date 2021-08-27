@@ -11,8 +11,6 @@ T* HashList<T>::get (int key) {
 
 template <class T>
 T* HashList<T>::add (int key) {
-    if (Diag::CMD)
-        DIAG(F("HashList::Add %d"), key);
   Node* pT = makeNode (key);
   return pT->data;
 }
@@ -32,8 +30,8 @@ bool HashList<T>::remove (int key) {
   Node* pPriorNode  = nullptr;
 
   while (pNode != nullptr  &&  pNode->key != key) {
-    pPriorNode = pNode;
-    pNode  = pNode->pNext;
+    pPriorNode  = pNode;
+    pNode       = pNode->pNext;
   }
   if (pNode == nullptr) return false;
 
@@ -47,7 +45,7 @@ bool HashList<T>::remove (int key) {
   pFreeRoot     = pNode;
 
   count--;
-  seq++;
+  bumpChanged ();
   return true;
 }
 

@@ -2,6 +2,7 @@
 #include <unity.h>
 
 #include "tests_HashList.h"
+#include "tests_DccManager.h"
 #include "tests_Turnout.h"
 #include "tests_Sensor.h"
 #include "tests_Output.h"
@@ -15,7 +16,9 @@ void setup () {
 
   UNITY_BEGIN ();
 
-  testHashList ();
+  // testHashList ();
+  testDccManager ();
+
   testTurnout ();
   testSensor ();
   testOutput ();

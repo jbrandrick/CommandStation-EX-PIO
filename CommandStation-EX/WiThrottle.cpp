@@ -83,7 +83,7 @@ WiThrottle::WiThrottle( int wificlientid) {
    clientid=wificlientid;
    initSent=false; // prevent sending heartbeats before connection completed
    heartBeatEnable=false; // until client turns it on
-   turnoutListHash = -1;  // make sure turnout list is sent once
+  //  turnoutListHash = -1;  // make sure turnout list is sent once
    for (int loco=0;loco<MAX_MY_LOCO; loco++) myLocos[loco].throttle='\0';
 }
 
@@ -115,13 +115,13 @@ void WiThrottle::parse(RingStream * stream, byte * cmdx) {
       lastPowerState = currentPowerState;  
     }
     // Send turnout list if changed since last sent (will replace list on client)
-    if (DCC_MANAGER->turnouts->hasChanged (turnoutListHash)) {  // WAS if (turnoutListHash != Turnout::turnoutlistHash) {
+    if (DCC_MANAGER->turnouts->hasChanged ()) {  // WAS if (turnoutListHash != Turnout::turnoutlistHash) {
       StringFormatter::send(stream,F("PTL"));
 
       DCC_MANAGER->turnouts->walkList ([stream] (int _key, Turnout* turnout) { turnout->sendWifi (stream); }); // WAS
-
       StringFormatter::send(stream,F("\n"));
-      turnoutListHash = DCC_MANAGER->turnouts->currentSeq (); // WAS  turnoutListHash = Turnout::turnoutlistHash; // keep a copy of hash for later comparison
+       
+      DCC_MANAGER->turnouts->resetChanged (); // WAS  turnoutListHash = Turnout::turnoutlistHash; // keep a copy of hash for later comparison
     }
   }
 

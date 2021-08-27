@@ -6,7 +6,6 @@
 #include "Turnout.h"
 #include "Sensor.h"
 #include "Output.h"
-#include "DIAG.h"
 template <class T>
 class HashList {
 
@@ -19,6 +18,7 @@ class HashList {
       pRoot     = nullptr;
       count     = 0;
       seq       = 0;
+      seqBase   = 0;
     };
 
     T*    get (int);
@@ -37,11 +37,11 @@ class HashList {
     int   size () {
       return count;
     }
-    bool  hasChanged (int seqIn) {
-      return (seq > seqIn);
+    bool  hasChanged () {
+      return (seq > seqBase);
     }
-    int   currentSeq () {
-      return seq;
+    void  resetChanged () {
+      seqBase = seq;
     }
 
 
@@ -51,6 +51,7 @@ class HashList {
     Node* pRoot;
     int   count;
     int   seq;
+    int   seqBase;
 
 
     class Node {
@@ -61,7 +62,11 @@ class HashList {
       friend class HashList;
     };
 
-
+    void bumpChanged () {
+      if (baseSeq > 64000)
+        baseSeq = seq = 0;
+      seq++;
+    }
     Node* getNode (int key) {
       Node* pNode = getRootNode ();
 
@@ -104,7 +109,7 @@ class HashList {
         setRootNode (pNewNode);
       }
       count++;
-      seq++;
+      bumpChanged ();
 
       return pNewNode;
     }

@@ -53,6 +53,7 @@ void LCN::loop() {
 
       Turnout* turnout = DCC_MANAGER->turnouts->getOrAdd (id); // WAS Turnout * tt = Turnout::get(id);
       turnout->populate (id, LCN_TURNOUT_ADDRESS, 0);  // WAS if (!tt) Turnout::create(id, LCN_TURNOUT_ADDRESS, 0);
+      
       if (ch == 't') turnout->data.tStatus |= STATUS_ACTIVE;
       else   turnout->data.tStatus &= ~STATUS_ACTIVE;
       // WAS Turnout::turnoutlistHash++; // signals ED update of turnout data

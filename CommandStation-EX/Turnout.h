@@ -29,9 +29,6 @@ class Turnout {
     int eeStoreTurnoutDataOffset;  // EEPROM address of tStatus in TurnoutData struct, or zero if not stored.
 
   public:
-  
-    static int turnoutlistHash;
-    static void printAll(Print *);
 
     TurnoutData data;
 

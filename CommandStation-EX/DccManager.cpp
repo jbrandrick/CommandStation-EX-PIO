@@ -1,5 +1,4 @@
 #include "DccManager.h"
-#include "DIAG.h"
 
 DccManager* DccManager::instance = nullptr;
 
