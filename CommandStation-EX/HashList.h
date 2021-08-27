@@ -63,8 +63,8 @@ class HashList {
     };
 
     void bumpChanged () {
-      if (baseSeq > 64000)
-        baseSeq = seq = 0;
+      if (seqBase > 64000)
+        seqBase = seq = 0;
       seq++;
     }
     Node* getNode (int key) {
