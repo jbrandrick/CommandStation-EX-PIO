@@ -510,6 +510,7 @@ void DCCEXParser::parse(Print *stream, byte *com, RingStream * ringStream)
         return;       
 
     case 'E': // STORE EPROM <E>
+        DCC_MANAGER->eeStore->store ();
         DCC_MANAGER->eeStore->send (stream);  //  WAS
         return;
 

@@ -2,10 +2,11 @@
 
 DccManager* DccManager::instance = nullptr;
 
- DccManager* DccManager::getInstance () {
-  if (instance == nullptr)
+DccManager* DccManager::getInstance () {
+  if (instance == nullptr) {
     instance = new DccManager ();
-
+    instance->init ();
+  }
   return instance;
 }
 

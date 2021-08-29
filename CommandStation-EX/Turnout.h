@@ -46,7 +46,6 @@ class Turnout {
       return data.tStatus & STATUS_ACTIVE;
     }
     void persistStatus () {
-      // if (EEStore::eeStore->data.nTurnouts > 0  &&  num > 0) // ??? why do we need data.nTurnouts > 0?
       if (eeStoreTurnoutDataOffset > 0)
         EEPROM.put (eeStoreTurnoutDataOffset, data.tStatus);
     }
