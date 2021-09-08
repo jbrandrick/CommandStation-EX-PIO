@@ -3,9 +3,11 @@
 #define HashList_h
 
 
+#include "Loco.h"
 #include "Turnout.h"
 #include "Sensor.h"
 #include "Output.h"
+
 template <class T>
 class HashList {
 
@@ -115,6 +117,8 @@ class HashList {
     }
 };
 
+// ensure these are present during incremental compile
+template class HashList<Loco>;
 template class HashList<Turnout>;
 template class HashList<Sensor>;
 template class HashList<Output>;

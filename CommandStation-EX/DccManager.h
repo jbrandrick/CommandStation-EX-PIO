@@ -7,6 +7,7 @@
 
 #include "HashList.h"
 #include "EEStore.h"
+#include "Loco.h"
 #include "Turnout.h"
 #include "Sensor.h"
 #include "Output.h"
@@ -31,6 +32,7 @@ class DccManager {
 
     EEStore* eeStore;
 
+    HashList<Loco>* locos;
     HashList<Turnout>* turnouts;
     HashList<Sensor>* sensors;
     HashList<Output>* outputs;

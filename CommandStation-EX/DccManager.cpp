@@ -13,9 +13,10 @@ DccManager* DccManager::getInstance () {
 void DccManager::init () {
   eeStore = new EEStore;
 
-  turnouts = new HashList<Turnout>;
-  sensors = new HashList<Sensor>;
-  outputs = new HashList<Output>;
+  locos     = new HashList<Loco>;
+  turnouts  = new HashList<Turnout>;
+  sensors   = new HashList<Sensor>;
+  outputs   = new HashList<Output>;
 
   currentSensorKey = -1;
 }
