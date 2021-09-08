@@ -19,12 +19,14 @@ void testHashList () {
   list = new HashList<TestValue>;
   printFreeMemory ();
                                             // create & free 3 int[100] arrays
-  for (int i=0; i < 100; i++) {             // do this 100 times
+  for (int i=0; i < 10; i++) {             // do this 100 times
       RUN_TEST (testHashList_empty_get);
       RUN_TEST (testHashList_empty_hashlist);
       RUN_TEST (testHashList_add_to_hashlist);
       RUN_TEST (testHashList_remove_from_hashlist);
       RUN_TEST (testHashList_empty_hashlist);
+      if (i % 10 == 0)
+        printFreeMemory ();
     }
   printFreeMemory ();                       // memory should reduce by 600 + a few bytes (3 * 100 * 2)
 }
@@ -74,7 +76,8 @@ bool testHashList_compare_keys (int ref[], HashList<TestValue>* list) {
   //   return false;
   int refIdx = 0;
   bool result = true;
-  list->walkList ([ref, refIdx, result] (int key, TestValue* testValue) mutable {
+  list->walkListWithKey ([ref, refIdx, result] (int key, TestValue* testValue) mutable {
+    (void) testValue;
     if (ref[refIdx] != key)
       result = false;
     refIdx++;

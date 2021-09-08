@@ -16,7 +16,7 @@ void setup () {
 
   UNITY_BEGIN ();
 
-  // testHashList ();
+  testHashList ();
   testDccManager ();
 
   testTurnout ();
