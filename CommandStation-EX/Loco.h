@@ -11,11 +11,11 @@ const byte FN_GROUP_3=0x04;
 const byte FN_GROUP_4=0x08;         
 const byte FN_GROUP_5=0x10;
 
-
 class Loco {
 
   private:
 
+    int           cab;
     byte          speedCode;
     byte          groupFlags;
     unsigned long functions;
@@ -24,11 +24,23 @@ class Loco {
 
   public:
 
-    int           cab;
-    
     int     getFn (int16_t);
     void    setFn (int16_t, bool);
     int     changeFn (int16_t, bool);
+
+    // these getters are temporary for current state of DCC::issueReminder
+    int getCab () {
+      return cab;
+    }
+    byte getSpeedCode () {
+      return speedCode;
+    }
+    byte getGroupFlags () {
+      return groupFlags;
+    }
+    unsigned long getFunctions () {
+      return functions;
+    }
 
     void forgetLoco () {   
       cab = 0;

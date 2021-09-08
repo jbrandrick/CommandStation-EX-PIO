@@ -1,4 +1,5 @@
 #include "DccManager.h"
+#include "Dcc.h"
 
 DccManager* DccManager::instance = nullptr;
 
@@ -18,7 +19,8 @@ void DccManager::init () {
   sensors   = new HashList<Sensor>;
   outputs   = new HashList<Output>;
 
-  currentSensorKey = -1;
+  currentSensorKey  = -1;
+  currentLocoKey    = -1;
 }
 
 // TODO remove the need to walk the list each time
@@ -30,5 +32,15 @@ void DccManager::checkSensor (Stream& stream) {
       currentSensorKey = sensors->getNextKey (currentSensorKey);
     }
     sensors->get (currentSensorKey)->check (&stream);
+  }
+}
+void DccManager::issueLocoReminders () {
+  if (locos->size () > 0) {
+    if (currentLocoKey == -1) {
+      currentLocoKey = locos->getFirstKey ();
+    } else {
+      currentLocoKey = locos->getNextKey (currentLocoKey);
+    }
+    DCC::issueReminder (locos->get (currentLocoKey));
   }
 }

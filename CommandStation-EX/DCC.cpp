@@ -22,6 +22,7 @@
 #include "DccManager.h"
 #include "DCCWaveform.h"
 #include "GITHUB_SHA.h"
+#include "Loco.h"
 #include "version.h"
 #include "FSH.h"
 
@@ -36,13 +37,13 @@
 // The interface to the waveform generator is narrowed down to merely:
 //   Scheduling a message on the prog or main track using a function
 //   Obtaining ACKs from the prog track using a function
-//   There are no volatiles here.
+//   There are no volatiles here.       
 
-const byte FN_GROUP_1=0x01;         
-const byte FN_GROUP_2=0x02;         
-const byte FN_GROUP_3=0x04;         
-const byte FN_GROUP_4=0x08;         
-const byte FN_GROUP_5=0x10;         
+// const byte FN_GROUP_1=0x01;         
+// const byte FN_GROUP_2=0x02;         
+// const byte FN_GROUP_3=0x04;         
+// const byte FN_GROUP_4=0x08;         
+// const byte FN_GROUP_5=0x10;
 
 FSH* DCC::shieldName=NULL;
 byte DCC::joinRelay=UNUSED_PIN;
@@ -130,15 +131,23 @@ void DCC::setFunctionInternal(int cab, byte byte1, byte byte2) {
 }
 
 uint8_t DCC::getThrottleSpeed(int cab) {
-  int reg=lookupSpeedTable(cab);
-  if (reg<0) return -1;
-  return speedTable[reg].speedCode & 0x7F;
+  Loco* loco = DCC_MANAGER->locos->get (cab);
+  if (loco == nullptr)
+    return -1;
+  return loco->getThrottleSpeed ();
+  // int reg=lookupSpeedTable(cab);
+  // if (reg<0) return -1;
+  // return speedTable[reg].speedCode & 0x7F;
 }
 
 bool DCC::getThrottleDirection(int cab) {
-  int reg=lookupSpeedTable(cab);
-  if (reg<0) return false ;
-  return (speedTable[reg].speedCode & 0x80) !=0;
+  Loco* loco = DCC_MANAGER->locos->get (cab);
+  if (loco == nullptr)
+    return false;
+  return loco->getThrottleDirection ();
+  // int reg=lookupSpeedTable(cab);
+  // if (reg<0) return false ;
+  // return (speedTable[reg].speedCode & 0x80) !=0;
 }
 
 // Set function to value on or off
@@ -165,74 +174,85 @@ void DCC::setFn( int cab, int16_t functionNumber, bool on) {
     return;
   }
   
-  int reg = lookupSpeedTable(cab);
-  if (reg<0) return;  
+  Loco* loco = DCC_MANAGER->locos->get (cab);
+  if (loco != nullptr)
+    loco->setFn (functionNumber, on);
+  // int reg = lookupSpeedTable(cab);
+  // if (reg<0) return;  
 
-  // Take care of functions:
-  // Set state of function
-  unsigned long funcmask = (1UL<<functionNumber);
-  if (on) {
-      speedTable[reg].functions |= funcmask;
-  } else {
-      speedTable[reg].functions &= ~funcmask;
-  }
-  updateGroupflags(speedTable[reg].groupFlags, functionNumber);
-  return;
+  // // Take care of functions:
+  // // Set state of function
+  // unsigned long funcmask = (1UL<<functionNumber);
+  // if (on) {
+  //     speedTable[reg].functions |= funcmask;
+  // } else {
+  //     speedTable[reg].functions &= ~funcmask;
+  // }
+  // updateGroupflags(speedTable[reg].groupFlags, functionNumber);
+  // return;
 }
 
 // Change function according to how button was pressed,
 // typically in WiThrottle.
 // Returns new state or -1 if nothing was changed.
 int DCC::changeFn( int cab, int16_t functionNumber, bool pressed) {
-  int funcstate = -1;
-  if (cab<=0 || functionNumber>28) return funcstate;
-  int reg = lookupSpeedTable(cab);
-  if (reg<0) return funcstate;  
+  Loco* loco = DCC_MANAGER->locos->get (cab);
+  if (loco == nullptr)
+    return -1;
+  return loco->changeFn (functionNumber, pressed);
+  // int funcstate = -1;
+  // if (cab<=0 || functionNumber>28) return funcstate;
+  // int reg = lookupSpeedTable(cab);
+  // if (reg<0) return funcstate;  
 
-  // Take care of functions:
-  // Imitate how many command stations do it: Button press is
-  // toggle but for F2 where it is momentary
-  unsigned long funcmask = (1UL<<functionNumber);
-  if (functionNumber == 2) {
-      // turn on F2 on press and off again at release of button
-      if (pressed) {
-	  speedTable[reg].functions |= funcmask;
-	  funcstate = 1;
-      } else {
-	  speedTable[reg].functions &= ~funcmask;
-	  funcstate = 0;
-      }
-  } else {
-      // toggle function on press, ignore release
-      if (pressed) {
-        speedTable[reg].functions ^= funcmask;
-      }
-      funcstate = (speedTable[reg].functions & funcmask)? 1 : 0;
-  }
-  updateGroupflags(speedTable[reg].groupFlags, functionNumber);
-  return funcstate;
+  // // Take care of functions:
+  // // Imitate how many command stations do it: Button press is
+  // // toggle but for F2 where it is momentary
+  // unsigned long funcmask = (1UL<<functionNumber);
+  // if (functionNumber == 2) {
+  //     // turn on F2 on press and off again at release of button
+  //     if (pressed) {
+	//   speedTable[reg].functions |= funcmask;
+	//   funcstate = 1;
+  //     } else {
+	//   speedTable[reg].functions &= ~funcmask;
+	//   funcstate = 0;
+  //     }
+  // } else {
+  //     // toggle function on press, ignore release
+  //     if (pressed) {
+  //       speedTable[reg].functions ^= funcmask;
+  //     }
+  //     funcstate = (speedTable[reg].functions & funcmask)? 1 : 0;
+  // }
+  // updateGroupflags(speedTable[reg].groupFlags, functionNumber);
+  // return funcstate;
 }
 
 int DCC::getFn( int cab, int16_t functionNumber) {
-  if (cab<=0 || functionNumber>28) return -1;  // unknown
-  int reg = lookupSpeedTable(cab);
-  if (reg<0) return -1;  
+  Loco* loco = DCC_MANAGER->locos->get (cab);
+  if (loco == nullptr)
+    return -1;
+  return loco->getFn (functionNumber);
+  // if (cab<=0 || functionNumber>28) return -1;  // unknown
+  // int reg = lookupSpeedTable(cab);
+  // if (reg<0) return -1;  
 
-  unsigned long funcmask = (1UL<<functionNumber);
-  return  (speedTable[reg].functions & funcmask)? 1 : 0;
+  // unsigned long funcmask = (1UL<<functionNumber);
+  // return  (speedTable[reg].functions & funcmask)? 1 : 0;
 }
 
 // Set the group flag to say we have touched the particular group.
 // A group will be reminded only if it has been touched.  
-void DCC::updateGroupflags(byte & flags, int16_t functionNumber) {
-  byte groupMask;
-  if (functionNumber<=4)       groupMask=FN_GROUP_1;
-  else if (functionNumber<=8)  groupMask=FN_GROUP_2;
-  else if (functionNumber<=12) groupMask=FN_GROUP_3;
-  else if (functionNumber<=20) groupMask=FN_GROUP_4;
-  else                         groupMask=FN_GROUP_5;
-  flags |= groupMask; 
-}
+// void DCC::updateGroupflags(byte & flags, int16_t functionNumber) {
+//   byte groupMask;
+//   if (functionNumber<=4)       groupMask=FN_GROUP_1;
+//   else if (functionNumber<=8)  groupMask=FN_GROUP_2;
+//   else if (functionNumber<=12) groupMask=FN_GROUP_3;
+//   else if (functionNumber<=20) groupMask=FN_GROUP_4;
+//   else                         groupMask=FN_GROUP_5;
+//   flags |= groupMask; 
+// }
 
 void DCC::setAccessory(int address, byte number, bool activate) {
   // use masks to detect wrong values and do nothing
@@ -548,13 +568,19 @@ void DCC::setLocoId(int id,ACK_CALLBACK callback) {
 
 void DCC::forgetLoco(int cab) {  // removes any speed reminders for this loco
   setThrottle2(cab,1); // ESTOP this loco if still on track  
-  int reg=lookupSpeedTable(cab);
-  if (reg>=0) speedTable[reg].loco=0;
+
+  Loco* loco = DCC_MANAGER->locos->get (cab);
+  if (loco != nullptr)
+    loco->forgetLoco ();
+
+  // int reg=lookupSpeedTable(cab);
+  // if (reg>=0) speedTable[reg].loco=0;
   setThrottle2(cab,1); // ESTOP if this loco still on track
 }
 void DCC::forgetAllLocos() {  // removes all speed reminders
   setThrottle2(0,1); // ESTOP all locos still on track      
-  for (int i=0;i<MAX_LOCOS;i++) speedTable[i].loco=0;
+  // for (int i=0;i<MAX_LOCOS;i++) speedTable[i].loco=0;
+  DCC_MANAGER->locos->walkList ([] (Loco* loco) { loco->forgetLoco (); });
 }
 
 byte DCC::loopStatus=0;  
@@ -570,48 +596,52 @@ void DCC::issueReminders() {
   if ( DCCWaveform::mainTrack.packetPending) return;
 
   // This loop searches for a loco in the speed table starting at nextLoco and cycling back around
-  for (int reg=0;reg<MAX_LOCOS;reg++) {
-       int slot=reg+nextLoco;
-       if (slot>=MAX_LOCOS) slot-=MAX_LOCOS; 
-       if (speedTable[slot].loco > 0) {
-          // have found the next loco to remind 
-          // issueReminder will return true if this loco is completed (ie speed and functions)
-          if (issueReminder(slot)) nextLoco=slot+1; 
-          return;
-        }
-  }
+  // for (int reg=0;reg<MAX_LOCOS;reg++) {
+  //      int slot=reg+nextLoco;
+  //      if (slot>=MAX_LOCOS) slot-=MAX_LOCOS; 
+  //      if (speedTable[slot].loco > 0) {
+  //         // have found the next loco to remind 
+  //         // issueReminder will return true if this loco is completed (ie speed and functions)
+  //         if (issueReminder(slot)) nextLoco=slot+1; 
+  //         return;
+  //       }
+  // }
+  DCC_MANAGER->issueLocoReminders ();
 }
  
-bool DCC::issueReminder(int reg) {
-  unsigned long functions=speedTable[reg].functions;
-  int loco=speedTable[reg].loco;
-  byte flags=speedTable[reg].groupFlags;
+// bool DCC::issueReminder(int reg) {
+//   unsigned long functions=speedTable[reg].functions;
+//   int loco=speedTable[reg].loco;
+//   byte flags=speedTable[reg].groupFlags;
+bool DCC::issueReminder (Loco* loco) {
+  unsigned long functions = loco->getFunctions ();
+  byte flags = loco->getGroupFlags ();
   
   switch (loopStatus) {
         case 0:
       //   DIAG(F("Reminder %d speed %d"),loco,speedTable[reg].speedCode);
-         setThrottle2(loco, speedTable[reg].speedCode);
+         setThrottle2 (loco->getCab (), loco->getSpeedCode ());
          break;
        case 1: // remind function group 1 (F0-F4)
           if (flags & FN_GROUP_1) 
-              setFunctionInternal(loco,0, 128 | ((functions>>1)& 0x0F) | ((functions & 0x01)<<4)); // 100D DDDD
+              setFunctionInternal (loco->getCab (), 0, 128 | ((functions>>1)& 0x0F) | ((functions & 0x01)<<4)); // 100D DDDD
           break;     
        case 2: // remind function group 2 F5-F8
           if (flags & FN_GROUP_2) 
-              setFunctionInternal(loco,0, 176 | ((functions>>5)& 0x0F));                           // 1011 DDDD
+              setFunctionInternal (loco->getCab (), 0, 176 | ((functions>>5)& 0x0F));                           // 1011 DDDD
           break;     
        case 3: // remind function group 3 F9-F12
           if (flags & FN_GROUP_3) 
-              setFunctionInternal(loco,0, 160 | ((functions>>9)& 0x0F));                           // 1010 DDDD
+              setFunctionInternal (loco->getCab (), 0, 160 | ((functions>>9)& 0x0F));                           // 1010 DDDD
           break;   
        case 4: // remind function group 4 F13-F20
           if (flags & FN_GROUP_4) 
-              setFunctionInternal(loco,222, ((functions>>13)& 0xFF)); 
+              setFunctionInternal (loco->getCab (), 222, ((functions>>13)& 0xFF)); 
           flags&= ~FN_GROUP_4;  // dont send them again
           break;  
        case 5: // remind function group 5 F21-F28
           if (flags & FN_GROUP_5)
-              setFunctionInternal(loco,223, ((functions>>21)& 0xFF)); 
+              setFunctionInternal (loco->getCab (), 223, ((functions>>21)& 0xFF)); 
           flags&= ~FN_GROUP_5;  // dont send them again
           break; 
       }
@@ -637,45 +667,52 @@ byte DCC::cv2(int cv)  {
   return lowByte(cv);
 }
 
-int DCC::lookupSpeedTable(int locoId) {
-  // determine speed reg for this loco
-  int firstEmpty = MAX_LOCOS;
-  int reg;
-  for (reg = 0; reg < MAX_LOCOS; reg++) {
-    if (speedTable[reg].loco == locoId) break;
-    if (speedTable[reg].loco == 0 && firstEmpty == MAX_LOCOS) firstEmpty = reg;
-  }
-  if (reg == MAX_LOCOS) reg = firstEmpty;
-  if (reg >= MAX_LOCOS) {
-    DIAG(F("Too many locos"));
-    return -1;
-  }
-  if (reg==firstEmpty){
-        speedTable[reg].loco = locoId;
-        speedTable[reg].speedCode=128;  // default direction forward
-        speedTable[reg].groupFlags=0;
-        speedTable[reg].functions=0;
-  }
-  return reg;
-}
+// int DCC::lookupSpeedTable(int locoId) {
+//   // determine speed reg for this loco
+//   int firstEmpty = MAX_LOCOS;
+//   int reg;
+//   for (reg = 0; reg < MAX_LOCOS; reg++) {
+//     if (speedTable[reg].loco == locoId) break;
+//     if (speedTable[reg].loco == 0 && firstEmpty == MAX_LOCOS) firstEmpty = reg;
+//   }
+//   if (reg == MAX_LOCOS) reg = firstEmpty;
+//   if (reg >= MAX_LOCOS) {
+//     DIAG(F("Too many locos"));
+//     return -1;
+//   }
+//   if (reg==firstEmpty){
+//         speedTable[reg].loco = locoId;
+//         speedTable[reg].speedCode=128;  // default direction forward
+//         speedTable[reg].groupFlags=0;
+//         speedTable[reg].functions=0;
+//   }
+//   return reg;
+// }
   
-void  DCC::updateLocoReminder(int loco, byte speedCode) {
+void DCC::updateLocoReminder(int cab, byte speedCode) {
  
-  if (loco==0) {
+  if (cab == 0) {
      // broadcast stop/estop but dont change direction
-     for (int reg = 0; reg < MAX_LOCOS; reg++) {
-       speedTable[reg].speedCode = (speedTable[reg].speedCode & 0x80) |  (speedCode & 0x7f);
-     }
-     return; 
-  }
+    //  for (int reg = 0; reg < MAX_LOCOS; reg++) {
+    //    speedTable[reg].speedCode = (speedTable[reg].speedCode & 0x80) |  (speedCode & 0x7f);
+    //  }
+      DCC_MANAGER->locos->walkList ([speedCode] (Loco* loco) {
+        loco->setThrottleSpeed (speedCode);
+      });
+  } else {
   
   // determine speed reg for this loco
-  int reg=lookupSpeedTable(loco);       
-  if (reg>=0) speedTable[reg].speedCode = speedCode;
+  // int reg=lookupSpeedTable(cab);       
+  // if (reg>=0) speedTable[reg].speedCode = speedCode;
+
+    Loco* loco = DCC_MANAGER->locos->get (cab);
+    if (loco != nullptr)
+      loco->setThrottleSpeed (speedCode);
+  }
 }
 
-DCC::LOCO DCC::speedTable[MAX_LOCOS];
-int DCC::nextLoco = 0;
+// DCC::LOCO DCC::speedTable[MAX_LOCOS];
+// int DCC::nextLoco = 0;
 
 //ACK MANAGER
 ackOp  const *  DCC::ackManagerProg;
@@ -955,14 +992,14 @@ void DCC::callback(int value) {
 
 void DCC::displayCabList(Print * stream) {
 
-    int used=0;
-    for (int reg = 0; reg < MAX_LOCOS; reg++) {
-       if (speedTable[reg].loco>0) {
-        used ++;
-        StringFormatter::send(stream,F("cab=%d, speed=%d, dir=%c \n"),       
-           speedTable[reg].loco,  speedTable[reg].speedCode & 0x7f,(speedTable[reg].speedCode & 0x80) ? 'F':'R');
-       }
-     }
-     StringFormatter::send(stream,F("Used=%d, max=%d\n"),used,MAX_LOCOS);
-     
+    // int used=0;
+    // for (int reg = 0; reg < MAX_LOCOS; reg++) {
+    //    if (speedTable[reg].loco>0) {
+    //     used ++;
+    //     StringFormatter::send(stream,F("cab=%d, speed=%d, dir=%c \n"),       
+    //        speedTable[reg].loco,  speedTable[reg].speedCode & 0x7f,(speedTable[reg].speedCode & 0x80) ? 'F':'R');
+    //    }
+    //  }
+  DCC_MANAGER->locos->walkList ([stream] (Loco* loco) { loco->displayCab (stream); });
+  StringFormatter::send (stream, F("Used=%d, max=%d\n"), DCC_MANAGER->locos->size (), MAX_LOCOS);
 }

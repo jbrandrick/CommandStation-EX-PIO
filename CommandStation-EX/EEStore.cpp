@@ -97,7 +97,7 @@ void EEStore::store (){
     resetPointer ();
 
     data.nTurnouts = 0;
-    DCC_MANAGER->turnouts->walkList ([this] (int _key, Turnout* turnout) mutable {
+    DCC_MANAGER->turnouts->walkList ([this] (Turnout* turnout) mutable {
       EEPROM.put (eeAddress, turnout->data);
       turnout->setTurnoutDataOffset (eeAddress);
       advancePointer (sizeof(TurnoutData));
@@ -105,14 +105,14 @@ void EEStore::store (){
     data.nTurnouts = DCC_MANAGER->turnouts->size ();
 
     data.nSensors = 0;
-    DCC_MANAGER->sensors->walkList ([this] (int _key, Sensor* sensor) {
+    DCC_MANAGER->sensors->walkList ([this] (Sensor* sensor) {
       EEPROM.put (eeAddress, sensor->data);
       advancePointer (sizeof(SensorData));
     });
     data.nSensors = DCC_MANAGER->sensors->size ();
 
     data.nOutputs = 0;
-    DCC_MANAGER->outputs->walkList ([this] (int _key, Output* output) {
+    DCC_MANAGER->outputs->walkList ([this] (Output* output) {
       EEPROM.put (eeAddress, output->data);
       output->setOutputDataOffset (eeAddress);
       advancePointer (sizeof(OutputData));

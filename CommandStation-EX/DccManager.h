@@ -21,6 +21,7 @@ class DccManager {
     static DccManager* instance;
 
     int currentSensorKey;
+    int currentLocoKey;
 
   public:
 
@@ -40,6 +41,7 @@ class DccManager {
     void init ();
 
     void checkSensor (Stream&);
+    void issueLocoReminders ();
 };
 
 #endif

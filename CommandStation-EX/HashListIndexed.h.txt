@@ -1,0 +1,42 @@
+
+#ifndef HashList_h
+#define HashList_h
+
+
+#include "HashList.h"
+#include "VPIN.h"
+
+template <class T>
+class HashListIndexed : public HashList<T> {
+
+  class Node;
+
+  public:
+
+    HashListIndexed<T> (int size) noexcept {
+      index = vec(size);
+    };
+
+    T*    get (int);
+
+
+  private:
+
+    vector<T*> index;
+
+
+    Node* getNode (int key) {
+      Node* pNode = getRootNode ();
+
+      while (pNode) {
+        if (pNode->key == key)
+          return pNode;
+        pNode = pNode->pNext;
+        }
+      return nullptr;
+    }
+};
+
+template class HashListIndexed<VPIN>;
+
+#endif

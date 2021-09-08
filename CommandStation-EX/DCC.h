@@ -22,6 +22,7 @@
 #include "MotorDriver.h"
 #include "MotorDrivers.h"
 #include "FSH.h"
+#include "Loco.h"
 
 typedef void (*ACK_CALLBACK)(int16_t result);
 
@@ -114,28 +115,30 @@ public:
     globalSpeedsteps = s;
   };
 
+  static bool issueReminder (Loco*);
+
 private:
-  struct LOCO
-  {
-    int loco;
-    byte speedCode;
-    byte groupFlags;
-    unsigned long functions;
-  };
+  // struct LOCO
+  // {
+  //   int loco;
+  //   byte speedCode;
+  //   byte groupFlags;
+  //   unsigned long functions;
+  // };
   static byte joinRelay;
   static byte loopStatus;
   static void setThrottle2(uint16_t cab, uint8_t speedCode);
   static void updateLocoReminder(int loco, byte speedCode);
   static void setFunctionInternal(int cab, byte fByte, byte eByte);
-  static bool issueReminder(int reg);
-  static int nextLoco;
+  // static bool issueReminder(int reg);
+  // static int nextLoco;
   static FSH *shieldName;
   static byte globalSpeedsteps;
 
-  static LOCO speedTable[MAX_LOCOS];
+  // static LOCO speedTable[MAX_LOCOS];
   static byte cv1(byte opcode, int cv);
   static byte cv2(int cv);
-  static int lookupSpeedTable(int locoId);
+  // static int lookupSpeedTable(int locoId);
   static void issueReminders();
   static void callback(int value);
 

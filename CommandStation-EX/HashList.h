@@ -33,6 +33,12 @@ class HashList {
     template <typename FTN>
     void walkList (FTN ftn) {
       for (Node* pNode = getRootNode (); pNode != nullptr; pNode = pNode->pNext) {
+        ftn (pNode->data);
+      }
+    }
+    template <typename FTN>
+    void walkListWithKey (FTN ftn) {
+      for (Node* pNode = getRootNode (); pNode != nullptr; pNode = pNode->pNext) {
         ftn (pNode->key, pNode->data);
       }
     }
