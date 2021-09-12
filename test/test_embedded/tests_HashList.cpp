@@ -74,7 +74,7 @@ bool testHashList_compare_keys (int ref[], HashList<TestValue>* list) {
   //   return false;
   int refIdx = 0;
   bool result = true;
-  list->walkList ([ref, refIdx, result] (int key, TestValue* testValue) mutable {
+  list->walkListWithKey ([ref, refIdx, result] (int key, TestValue* testValue) mutable {
     if (ref[refIdx] != key)
       result = false;
     refIdx++;

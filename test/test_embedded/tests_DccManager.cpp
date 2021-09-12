@@ -14,7 +14,6 @@ void testDccManager_getInstance () {
 }
 
 void testDccManager_init () {
-  DCC_MANAGER->init ();
   TEST_ASSERT_EQUAL (DCC_MANAGER->turnouts->size (), 0);
   TEST_ASSERT_EQUAL (DCC_MANAGER->sensors->size (), 0);
   TEST_ASSERT_EQUAL (DCC_MANAGER->outputs->size (), 0);
