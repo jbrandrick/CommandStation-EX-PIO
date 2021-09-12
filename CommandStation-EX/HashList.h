@@ -70,8 +70,8 @@ class HashList {
       friend class HashList;
     };
 
-    void bumpChanged () {
-      if (seqBase > 64000)
+    void bumpChanged () { 
+      if (seqBase > 64000)  // issues here
         seqBase = seq = 0;
       seq++;
     }

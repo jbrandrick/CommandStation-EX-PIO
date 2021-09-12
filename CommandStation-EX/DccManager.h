@@ -17,6 +17,7 @@ class DccManager {
   private:
 
     DccManager () {}
+    void init ();
 
     static DccManager* instance;
 
@@ -37,8 +38,6 @@ class DccManager {
     HashList<Turnout>* turnouts;
     HashList<Sensor>* sensors;
     HashList<Output>* outputs;
-
-    void init ();
 
     void checkSensor (Stream&);
     void issueLocoReminders ();
