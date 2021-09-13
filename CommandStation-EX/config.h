@@ -83,7 +83,7 @@ The configuration file for DCC-EX Command Station
 // you want to change the password from default AP mode password
 // to the AP password you want. 
 // Your password may not conain ``"'' (double quote, ASCII 0x22).
-#define WIFI_PASSWORD "44004400"
+#define WIFI_PASSWORD ""
 //
 // WIFI_HOSTNAME: You probably don't need to change this
 #define WIFI_HOSTNAME "dccex"
